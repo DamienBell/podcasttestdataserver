@@ -15,6 +15,15 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 
+
+let RespondSuccess = function(response, data){
+  return response.json({status: "success", results: data});
+}
+
+let RespondError = function(response, msg){
+  return response.json({status: "failed", msg: msg});
+}
+
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (request, response) {
   response.sendFile(__dirname + '/views/index.html');
@@ -38,14 +47,13 @@ app.post("/test", function (request, response) {
   let data  = request.body || {};
   let query = data.query   || {};
 
-  response.json({msg: "success"});
+  RespondSuccess(response, {msg: "howdy"})
 });
 
 app.get("/test", function (request, response) {
 
   let data  = request.body || {};
   let query = data.query   || {};
-
   
   response.send({msg: "success"});
 });
