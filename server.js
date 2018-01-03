@@ -38,7 +38,7 @@ app.post("/test", function (request, response) {
   let data  = request.body || {};
   let query = data.query   || {};
 
-  
+  response.setHeader('Content-Type', 'application/json');
   response.send({msg: "success"});
 });
 
