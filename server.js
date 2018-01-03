@@ -4,41 +4,55 @@
 // init project
 var express = require('express');
 var app     = express();
-var testdata = require('./random.test.names');
+var bodyParser = require('body-parser')
+
+const DATA  = require('./data/podcasts.json');
+const _     = require('underscore');
 
 // we've started you off with Express, 
 // but feel free to use whatever libs or frameworks you'd like through `package.json`.
-
-// http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json());
 
 // http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function (request, response) {
   response.sendFile(__dirname + '/views/index.html');
 });
 
+app.get("/data", function (request, response) {
+  response.send(DATA);
+});
+
+app.post("/episodes", function (request, response) {
+
+  let data  = request.body || {};
+  let query = data.query   || {};
+
+  
+  response.send(data);
+});
+
+app.post("/test", function (request, response) {
+
+  let data  = request.body || {};
+  let query = data.query   || {};
+
+  
+  response.send({msg: "success"});
+});
+
 app.get("/test", function (request, response) {
-  response.send(testdata.data);
+
+  let data  = request.body || {};
+  let query = data.query   || {};
+
+  
+  response.send({msg: "success"});
 });
 
-app.get("/dreams", function (request, response) {
-  response.send(dreams);
-});
 
-// could also use the POST body instead of query string: http://expressjs.com/en/api.html#req.body
-app.post("/dreams", function (request, response) {
-  dreams.push(request.query.dream);
-  response.sendStatus(200);
-});
-
-// Simple in-memory store for now
-var dreams = [
-  "Find and count some sheep",
-  "Climb a really tall mountain",
-  "Wash the dishes"
-];
-
-// listen for requests :)
-var listener = app.listen(process.env.PORT, function () {
+// listen for requests
+var listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
