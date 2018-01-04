@@ -6,7 +6,7 @@ require(HOME+"/tools/StringHelpers.js");
 
 let {WriteJSON} = require(HOME+"/tools/tools.js");
 
-const uuid    = require('uuid/v1');
+const uuid    = require('uuid/v4');
 const Promise = require('promise');
 const _       = require('underscore');
 const moment  = require('moment');
@@ -37,14 +37,15 @@ function writeData(data) {
 //     objectType: "SERIES_USERINFO",
 //     seriesID: <String>,
 //     userID: <String>,
-//     subcribed: <Bool>
+//     subscribed: <Bool>
 // }
 function generateSeriesUserInfo(seriesId) {
+
    return {
         objectType: "SERIES_USERINFO",
         seriesID: seriesId,
         userID: uuid(),
-        subcribed: randomBool()
+        subscribed: randomBool()
     }
 }
 
@@ -99,6 +100,7 @@ function generateEpisodeUserInfo(episode, userId) {
 //     id : <String>,
 //     duration: <Interval>,
 //     title: <String>,
+//     tags: [<String>],
 //     publishDate: <UTC TimeStamp>,
 //     description: <String>,
 //     imageURL: <String.URL>,
@@ -111,6 +113,7 @@ function generateEpisodeInstance(series) {
         objectType: "EPISODE",
         seriesId: series.id,
         id: uuid(),
+        tags: randomBool() ? ["news"] : [],
         duration: randomInt(300, 7200),
         title: randomLoremObject().EpisodeTitle,
         publishDate: randomLoremObject().episodeDate,
@@ -126,7 +129,7 @@ function generateEpisodeInstance(series) {
 
 function generateEpisodesForSeries(series) {
 
-    let episodeCount = randomInt(2, 40);
+    let episodeCount = randomInt(2, 35);
     var episodes = [];
     for (var i = 0; i < episodeCount; i++) {
         episodes.push(generateEpisodeInstance(series))
@@ -140,7 +143,7 @@ function generateSeries() {
 
     var series = [];
 
-    let seriesCount = randomInt(15, 60);
+    let seriesCount = randomInt(15, 40)
 
     for (var i = 0; i < seriesCount; i++) {
         series.push(generateSeriesInstance())
@@ -182,14 +185,15 @@ function generateData() {
         var data = {
             series: series
         }
+
         //note: these are all episodes for all series
         //They're seperated to make the test data more closely
         //resemble the way we will actually retrieve episodes & series
         //@ allEpidoes is [[<EPIDODES>]]
-        data.episodes = _.map(series, function(s){
+        let episodes = _.map(series, function(s) {
             return generateEpisodesForSeries(s);
         })
-
+        data.episodes = _.flatten(episodes);
         return Promise.resolve(data);
     })
     .then(function(data) {
