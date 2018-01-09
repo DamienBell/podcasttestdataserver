@@ -153,6 +153,14 @@ app.post("/series", function (request, response) {
   });
 });
 
+app.post("/galleries", function(request, response) {
+
+  RespondSuccess(response, {
+    offset: 0,
+    series: DATA.galleries
+  });
+})
+
 app.post("/test", function (request, response) {
 
   let data  = request.body || {};
